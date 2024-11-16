@@ -16,5 +16,19 @@ public class Main {
 
         System.out.println(taskManager);
 
+        System.out.println("\nModifying description\n");
+        taskManager.modifyDescription("Watch robotics course", "Lecture + Exercice 04");
+
+        System.out.println(taskManager);
+
+        System.out.println("\nMaking the Task done\n");
+        taskManager.setTaskDone("Watch robotics course");
+
+        System.out.println(taskManager);
+
+        System.out.println("\nChanging Priority\n");
+        taskManager.modifyPriority("Watch robotics course", 12);
+
+        System.out.println(taskManager);
     }
 }
