@@ -1,6 +1,8 @@
+import java.time.*;
+
 public class Task {
-    private String dateOfCreation;
-    private String deadline;
+    private LocalDate dateOfCreation;
+    private LocalDate deadline;
     private String description;
     private String title;
     private int priority;
@@ -8,7 +10,7 @@ public class Task {
     private boolean isDone;
 
     //Constructor
-    public Task(String title, String description, String dateOfCreation, String deadline, int priority) {
+    public Task(String title, String description, LocalDate dateOfCreation, LocalDate deadline, int priority) {
         this.title = title;
         this.description = description;
         this.dateOfCreation = dateOfCreation;
@@ -18,14 +20,15 @@ public class Task {
     }
 
     public String getDateOfCreation() {
-        return dateOfCreation;
+        return dateOfCreation.getDayOfWeek() + " " + dateOfCreation.getDayOfMonth() + " "+ dateOfCreation.getMonth() + " "+ dateOfCreation.getYear();
     }
 
     public boolean getDone() {
         return isDone;
     }
     public String getDeadline() {
-        return deadline;
+
+        return deadline.getDayOfWeek() + " " + deadline.getDayOfMonth() + " "+ deadline.getMonth() + " "+ deadline.getYear();
     }
 
     public String getDescription() {
@@ -40,11 +43,11 @@ public class Task {
         isDone = done;
     }
 
-    public void setDateOfCreation(String dateOfCreation) {
+    public void setDateOfCreation(LocalDate dateOfCreation) {
         this.dateOfCreation = dateOfCreation;
     }
 
-    public void setDeadline(String deadline) {
+    public void setDeadline(LocalDate deadline) {
         this.deadline = deadline;
     }
 
@@ -63,12 +66,14 @@ public class Task {
     public String toString() {
         String done = isDone? ", done" : ", not done";
         return "{" +
-                "dateOfCreation='" + dateOfCreation + '\'' +
-                ", deadline='" + deadline + '\'' +
+                "dateOfCreation='" + getDateOfCreation() + '\'' +
+                ", deadline='" + getDeadline() + '\'' +
                 ", description='" + description + '\'' +
                 ", title='" + title + '\'' +
                 ", priority=" + priority +
                  done+
                 '}';
     }
+
+
 }
