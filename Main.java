@@ -44,6 +44,7 @@ public class Main {
         MatchManager matchManager = new MatchManager();
         matchManager.addMatch(opponent, LocalDate.parse(matchDay), competition, isHome);
 
+
         System.out.println(matchManager.toString());
     }
 }
