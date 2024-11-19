@@ -6,47 +6,44 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-
+        //Match(String opponent, LocalDate matchDay, Competition competition, boolean isHome, boolean isFinished)
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Please provide the name of the Task: ");
-        String title = scanner.nextLine();
-        TaskManager taskManager = new TaskManager();
-        System.out.println("Please provide a small description");
-        String description = scanner.nextLine();
-        System.out.println("Please provide the deadline in the form yyyy-mm-dd");
-        String deadline = scanner.nextLine();
-        taskManager.createTask(title, description, LocalDate.now(), LocalDate.parse(deadline), 1);
-        //taskManager.createTask("Watch deep learning course", "Lecture 03", LocalDate.parse("2024-11-15"), LocalDate.parse("2024-11-20"), 1);
-        //taskManager.createTask("Watch robotics course", "Lecture 04", LocalDate.parse("2024-11-20"), LocalDate.parse("2024-11-19"), 1);
-        /*
-        System.out.println(taskManager);
+        System.out.println("Please provide the name of the Opponent: ");
+        String opponent = scanner.nextLine();
+        System.out.println("Please provide the MatchDay in the form yyyy-mm-dd");
+        String matchDay = scanner.nextLine();
+        System.out.println("Please choose the competition: \n1.LEAGUE,\n" +
+                "2.CUP,\n" +
+                "3.CHAMPIONS LEAGUE,\n" +
+                "4.FRIENDLY" +
+                "Choose a number from 1 to 4");
+        int number = scanner.nextInt();
+        Competition competition;
 
-        System.out.println("\nRemoving the first task\n");
-        taskManager.removeTask("Watch deep learning course");
+        switch (number) {
+            case 1:
+                competition = Competition.LEAGUE;
+                break;
+            case 2:
+                competition = Competition.CUP;
+                break;
+            case 3:
+                competition = Competition.CHAMPIONS_LEAGUE;
+                break;
+            case 4:
+                competition = Competition.FRIENDLY;
+                break;
+            default:
+                competition = Competition.FRIENDLY;
+                System.out.println("Invalid number: " + number);
+        }
+        System.out.println("Is the Match played at 1.Home or 2.Away? Choose a number");
+        int number2 = scanner.nextInt();
+        boolean isHome = number2 != 2;
 
-        System.out.println(taskManager);
+        MatchManager matchManager = new MatchManager();
+        matchManager.addMatch(opponent, LocalDate.parse(matchDay), competition, isHome);
 
-        System.out.println("\nModifying description\n");
-        taskManager.modifyDescription("Watch robotics course", "Lecture + Exercice 04");
-
-        System.out.println(taskManager);
-
-        System.out.println("\nMaking the Task done\n");
-        taskManager.setTaskDone("Watch robotics course");
-
-        System.out.println(taskManager);
-
-        System.out.println("\nChanging Priority\n");
-        taskManager.modifyPriority("Watch robotics course", 12);
-
-        System.out.println(taskManager);
-
-        taskManager.createTask("Go Gym", "at 16h", LocalDate.parse("2024-11-18"), LocalDate.parse("2024-11-22"), 1);
-        */
-        System.out.println("Printing done tasks only:");
-        taskManager.viewTasks(true);
-
-        System.out.println("\nPrinting all tasks");
-        taskManager.viewTasks(false);
+        System.out.println(matchManager.toString());
     }
 }
