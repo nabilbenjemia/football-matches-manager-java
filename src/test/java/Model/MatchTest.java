@@ -1,7 +1,5 @@
 package Model;
-import Model.Competition;
-import Model.Match;
-import Model.MatchManager;
+
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
