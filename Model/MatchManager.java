@@ -1,3 +1,8 @@
+package Model;
+
+import Model.Competition;
+import Model.Match;
+
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,9 +19,9 @@ public class MatchManager {
         for (Match addedMatch : listOfMatches) {
             if (matchDay.equals(addedMatch.getMatchDay())) {
                 if(opponent.equals(addedMatch.getOpponent())) {
-                    System.out.println("This Match has already been added");
+                    System.out.println("This Model.Match has already been added");
                 } else {
-                    System.out.println("On this day, a Match already exists");
+                    System.out.println("On this day, a Model.Match already exists");
                 }
                 return;
             }
@@ -85,14 +90,14 @@ public class MatchManager {
     public void viewTasks(boolean onlyDone) {
         boolean isEmpty = true;
         if(onlyDone) {
-            for (Match match : listOfTasks) {
+            for (Model.Match match : listOfTasks) {
                 if (match.getDone()) {
                     isEmpty = false;
                     System.out.println(match);
                 }
             }
         } else {
-            for (Match match : listOfTasks) {
+            for (Model.Match match : listOfTasks) {
                 isEmpty = false;
                 System.out.println(match);
             }

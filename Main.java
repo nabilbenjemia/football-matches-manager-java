@@ -1,12 +1,13 @@
+import Model.Competition;
+import Model.MatchManager;
+
 import java.time.LocalDate;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
-        //Match(String opponent, LocalDate matchDay, Competition competition, boolean isHome, boolean isFinished)
+        //Model.Match(String opponent, LocalDate matchDay, Model.Competition competition, boolean isHome, boolean isFinished)
         Scanner scanner = new Scanner(System.in);
         System.out.println("Please provide the name of the Opponent: ");
         String opponent = scanner.nextLine();
@@ -37,7 +38,7 @@ public class Main {
                 competition = Competition.FRIENDLY;
                 System.out.println("Invalid number: " + number);
         }
-        System.out.println("Is the Match played at 1.Home or 2.Away? Choose a number");
+        System.out.println("Is the Model.Match played at 1.Home or 2.Away? Choose a number");
         int number2 = scanner.nextInt();
         boolean isHome = number2 != 2;
 

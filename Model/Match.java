@@ -1,3 +1,5 @@
+package Model;
+
 import java.time.*;
 
 public class Match {
@@ -80,7 +82,7 @@ public class Match {
 
     @Override
     public String toString() {
-        return "Match{" +
+        return "Model.Match{" +
                 "opponent='" + opponent + '\'' +
                 ", matchDay=" + matchDay.toString() +
                 ", isHome=" + isHome +
