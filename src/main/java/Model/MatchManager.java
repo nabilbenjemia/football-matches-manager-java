@@ -86,6 +86,9 @@ public class MatchManager {
         return str;
     }
 
+    public Match getMatch(LocalDate matchDay) {
+        return listOfMatches.get(getMatchIndex(matchDay));
+    }
     /*
     public void viewTasks(boolean onlyDone) {
         boolean isEmpty = true;
