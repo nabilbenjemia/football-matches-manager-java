@@ -77,7 +77,6 @@ public class MatchManager {
             listOfMatches.get(matchIndex).setOpponentGoals(opponentGoals);
         }
     }
-
     public String toString() {
         String str = "";
         for (Match match: listOfMatches) {
