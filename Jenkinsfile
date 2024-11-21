@@ -25,7 +25,7 @@ pipeline {
     post {
         always {
             // Archive test results
-            junit 'build/test-results/**/*.xml'
+            junit '**/build/test-results/**/*.xml'
         }
         success {
             echo 'Build and tests passed!'
