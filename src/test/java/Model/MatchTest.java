@@ -11,7 +11,6 @@ public class MatchTest {
 
     @Test
     public void testMatchManager() {
-
         MatchManager matchManager = new MatchManager();
         matchManager.addMatch("ESS", LocalDate.parse("2022-09-08"), Competition.CUP, true);
         matchManager.setMatchFinished(LocalDate.parse("2022-09-08"));
