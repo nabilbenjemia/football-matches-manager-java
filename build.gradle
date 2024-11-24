@@ -45,8 +45,18 @@ dependencies {
 tasks.withType(Test) {
     useJUnitPlatform()
     testLogging {
-        exceptionFormat "full"
-        events "started", "skipped", "passed", "failed"
-        showStandardStreams true
+        events "FAILED", "SKIPPED", "STANDARD_OUT", "STANDARD_ERROR"
+        exceptionFormat "FULL" // Shows the full stack trace
+        showExceptions true    // Ensures exceptions are logged
+        showCauses true        // Logs the causes of failures
+        showStackTraces true   // Includes stack traces
+    }
+}
+
+tasks.test {
+    useJUnitPlatform() // If using JUnit 5
+    reports {
+        junitXml.enabled = true // Enables JUnit XML reports
+        html.enabled = true     // Enables HTML reports for local debugging
     }
 }

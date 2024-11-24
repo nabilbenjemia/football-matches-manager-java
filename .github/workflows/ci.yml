@@ -30,24 +30,22 @@ jobs:
 
       # Build with Gradle
       - name: Build with Gradle
-        run: ./gradlew clean build --info --stacktrace
+        run: ./gradlew clean build --info --no-daemon
 
       # Run tests with verbose output
       - name: Run tests
-        run: ./gradlew test --info --stacktrace
+        run: ./gradlew test --no-daemon
 
       # Display test report for failures in logs
-      - name: Display test report logs
-        if: failure()
-        run: |
-          echo "Test Results:"
-          cat build/test-results/test/*.xml || true
-          echo "Test Report (HTML):"
-          cat build/reports/tests/test/index.html || true
+      - name: Upload Test Results
+          uses: actions/upload-artifact@v3
+          with:
+            name: test-results
+            path: build/test-results
 
-      # Upload test results as an artifact
-      - name: Upload test results
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: build/test-results/test
+      - name: Publish Test Results
+          uses: dorny/test-reporter@v1
+          with:
+            name: Gradle Tests
+            path: build/test-results/test/*.xml
+            reporter: junit
