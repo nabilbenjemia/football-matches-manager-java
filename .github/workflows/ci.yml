@@ -30,7 +30,7 @@ jobs:
 
       # Build with Gradle
       - name: Build with Gradle
-        run: ./gradlew clean build --quiet
+        run: ./gradlew clean build --quiet --stacktrace
 
       # Run tests with verbose output
       - name: Run tests
