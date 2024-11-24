@@ -13,27 +13,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Ensure gradlew is executable
       - name: Ensure gradlew is executable
         run: chmod +x gradlew
 
+      # Set up JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'adopt'
 
+      # Build with Gradle
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: ./gradlew clean build --info  # '--info' will give more detailed output
 
+      # Run tests with Gradle
       - name: Run tests
-        run: ./gradlew test
+        run: ./gradlew test --info  # '--info' will give more detailed test output
 
+      # Upload test results as an artifact
       - name: Upload test results
         uses: actions/upload-artifact@v3
         with:
           name: test-results
           path: build/test-results/test
 
+      # Optional: Fail the job on test failure
+      - name: Check test results
+        run: |
+          if [ -f build/test-results/test/*.xml ]; then
+            echo "Test results found"
+          else
+            echo "No test results found"
+            exit 1
+          fi
