@@ -39,13 +39,13 @@ jobs:
       # Display test report for failures in logs
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
-          with:
-            name: test-results
-            path: build/test-results
+        with:
+          name: test-results
+          path: build/test-results
 
       - name: Publish Test Results
         uses: dorny/test-reporter@v1
-          with:
-            name: Gradle Tests
-            path: build/test-results/test/*.xml
-            reporter: junit
+        with:
+          name: Gradle Tests
+          path: build/test-results/test/*.xml
+          reporter: junit
