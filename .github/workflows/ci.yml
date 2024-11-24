@@ -30,11 +30,11 @@ jobs:
 
       # Build with Gradle
       - name: Build with Gradle
-        run: ./gradlew clean build --info --no-daemon
+        run: ./gradlew clean build --quiet
 
       # Run tests with verbose output
       - name: Run tests
-        run: ./gradlew test --no-daemon
+        run: ./gradlew test
 
       # Display test report for failures in logs
       - name: Upload Test Results
