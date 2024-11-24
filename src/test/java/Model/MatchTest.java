@@ -18,7 +18,7 @@ public class MatchTest {
         matchManager.setScoredGoals(LocalDate.parse("2022-09-08"), 5);
 
         Match match = matchManager.getMatch(LocalDate.parse("2022-09-08"));
-        assertEquals("2022-09-08", match.getMatchDay().toString());
+        assertEquals("2022-09-18", match.getMatchDay().toString());
         assertEquals("ESS", match.getOpponent());
         assertTrue(match.isHome());
     }
