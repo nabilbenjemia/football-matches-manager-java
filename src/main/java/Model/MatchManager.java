@@ -88,6 +88,10 @@ public class MatchManager {
     public Match getMatch(LocalDate matchDay) {
         return listOfMatches.get(getMatchIndex(matchDay));
     }
+
+    public int getTotalNumberOfMatchs() {
+        return listOfMatches.size();
+    }
     /*
     public void viewTasks(boolean onlyDone) {
         boolean isEmpty = true;
