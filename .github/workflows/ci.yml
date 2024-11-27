@@ -44,7 +44,7 @@ jobs:
           path: build/test-results
 
       - name: Publish Test Results
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v2
         with:
           name: Gradle Tests
           path: build/test-results/test/*.xml
