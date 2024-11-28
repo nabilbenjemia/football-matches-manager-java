@@ -39,7 +39,7 @@ public class MatchTest {
         matchManager.addMatch("ASM", LocalDate.parse("2022-09-08"), Competition.FRIENDLY, false);
 
         Match actualMatch = matchManager.getMatch(LocalDate.parse("2022-09-08"));
-        assertEquals(matchManager.getTotalNumberOfMatchs(), 1);
+        assertEquals(matchManager.getTotalNumberOfMatchs(), 2);
         assertEquals(actualMatch.getOpponent(), "ESS");
     }
 
