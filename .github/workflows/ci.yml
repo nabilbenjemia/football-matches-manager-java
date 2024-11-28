@@ -44,22 +44,22 @@ jobs:
           path: build/test-results
 
       # Optional: Fail the job on test failure
-      - name: Check and publish test results
-        if: success() && (steps.test.outputs.result == 'success')
+      - name: Check test results
         run: |
-          if ls build/test-results/test/*.xml 1> /dev/null 2>&1; then
-            echo "Test results found. Publishing test results..."
-            # Use the dorny/test-reporter action to publish the results
-            uses: dorny/test-reporter@v3
-            with:
-              name: Gradle Tests
-              path: build/test-results/test/*.xml
-              reporter: java-junit
+          if [ -f build/test-results/test/*.xml ]; then
+            echo "Test results found"
           else
             echo "No test results found"
             exit 1
           fi
-
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action/windows@v2
+        if: always()
+        with:
+          files: |
+            test-results\**\*.xml
+            test-results\**\*.trx
+            test-results\**\*.json
 #      - name: Publish Test Results
 #        uses: dorny/test-reporter@v1
 #        with:
