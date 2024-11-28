@@ -22,7 +22,7 @@ public class MatchTest {
         assertEquals("ESS", match.getOpponent());
         assertTrue(match.isHome());
     }
-/*
+
     @Test
     public void testDeleteMatch() {
         MatchManager matchManager = new MatchManager();
@@ -43,5 +43,5 @@ public class MatchTest {
         assertEquals(actualMatch.getOpponent(), "ESS");
     }
 
- */
+
 }
