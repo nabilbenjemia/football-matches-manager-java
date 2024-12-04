@@ -9,8 +9,12 @@ import java.util.List;
 
 public class MatchManager {
 
-    private List<Match> listOfMatches;
 
+
+    private List<Match> listOfMatches;
+    public List<Match> getListOfMatches() {
+        return listOfMatches;
+    }
     public MatchManager() {
         this.listOfMatches = new LinkedList<>();
     }
@@ -27,6 +31,22 @@ public class MatchManager {
             }
         }
         Match match = new Match(opponent, matchDay, competition, isHome);
+        listOfMatches.add(match);
+    }
+
+    public void addMatch(Match match) {
+        LocalDate matchDay = match.getMatchDay();
+        String opponent =match.getOpponent();
+        for (Match addedMatch : listOfMatches) {
+            if (matchDay.equals(addedMatch.getMatchDay())) {
+                if(opponent.equals(addedMatch.getOpponent())) {
+                    System.out.println("This Model.Match has already been added");
+                } else {
+                    System.out.println("On this day, a Model.Match already exists");
+                }
+                return;
+            }
+        }
         listOfMatches.add(match);
     }
 
@@ -92,6 +112,16 @@ public class MatchManager {
     public int getTotalNumberOfMatchs() {
         return listOfMatches.size();
     }
+
+    public List<Match> getMatchesAfter(LocalDate date) {
+        return listOfMatches.stream().filter(match -> match.getMatchDay().isAfter(date)).toList();
+    }
+
+    public List<Match> getMatchesBefore(LocalDate date) {
+        return listOfMatches.stream().filter(match -> match.getMatchDay().isBefore(date)).toList();
+    }
+
+
     /*
     public void viewTasks(boolean onlyDone) {
         boolean isEmpty = true;
