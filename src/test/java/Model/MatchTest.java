@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class MatchTest {
 
@@ -30,6 +29,7 @@ public class MatchTest {
         matchManager.addMatch("ESS", LocalDate.parse("2022-09-08"), Competition.CUP, true);
         assertEquals(matchManager.getTotalNumberOfMatchs(), 1);
         matchManager.removeMatch(LocalDate.parse("2022-09-08"));
+        assertEquals(matchManager.getTotalNumberOfMatchs(), 0);
     }
 
     @Test
@@ -43,5 +43,20 @@ public class MatchTest {
         assertEquals(actualMatch.getOpponent(), "ESS");
     }
 
+    @Test
+    public void testUpdateMatchDay() {
+        MatchManager matchManager = new MatchManager();
+        matchManager.addMatch("ESS", LocalDate.parse("2022-09-08"), Competition.CUP, true);
+        matchManager.addMatch("ASM", LocalDate.parse("2020-12-17"), Competition.FRIENDLY, false);
+
+        matchManager.updateMatchDay(LocalDate.parse("2022-09-08"), LocalDate.parse("2022-09-10"));
+        Match actualMatch = matchManager.getMatch(LocalDate.parse("2022-09-10"));
+        assertNotNull(actualMatch);
+        assertEquals(actualMatch.getOpponent(), "ESS");
+        assertEquals(actualMatch.getCompetition(), Competition.CUP);
+        assertTrue(actualMatch.isHome());
+
+
+    }
 
 }
