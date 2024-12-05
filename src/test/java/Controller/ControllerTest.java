@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ControllerTest {
 
@@ -23,9 +24,10 @@ public class ControllerTest {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
         System.setIn(inputStream); // Set the custom InputStream
 
-
         controller.start();
         System.setIn(System.in);
+
         //missing assertions
+        assertEquals(1, 0);
     }
 }
