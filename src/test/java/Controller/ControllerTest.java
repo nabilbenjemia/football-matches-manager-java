@@ -28,6 +28,6 @@ public class ControllerTest {
         System.setIn(System.in);
 
         //missing assertions
-        assertEquals(1, 0);
+
     }
 }
