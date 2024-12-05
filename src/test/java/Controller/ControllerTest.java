@@ -1,6 +1,9 @@
-package Model;
+package Controller;
 
 import Controller.MatchController;
+import Model.Competition;
+import Model.Match;
+import Model.MatchManager;
 import View.MatchView;
 import org.junit.jupiter.api.Test;
 
