@@ -23,6 +23,7 @@ public class ControllerTest {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(simulatedInput.getBytes());
         System.setIn(inputStream); // Set the custom InputStream
 
+
         controller.start();
         System.setIn(System.in);
         //missing assertions
