@@ -46,7 +46,7 @@ jobs:
       # Optional: Fail the job on test failure
       - name: Check test results
         run: |
-          if [ -f build/test-results/test/*.xml ]; then
+          if find build/test-results/test -name "*.xml" | grep -q .; then
             echo "Test results found"
           else
             echo "No test results found"
