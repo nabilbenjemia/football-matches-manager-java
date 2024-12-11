@@ -1,8 +1,6 @@
 package util;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DatabaseUtil {
     private static final String URL = "jdbc:mysql://localhost:3306/football_db";
@@ -23,8 +21,40 @@ public class DatabaseUtil {
 
     public static void main(String[] args) {
         try {
+            Connection connection = getConnection();
+            Statement statement = connection.createStatement();
+            String query_ = "insert into matches(opponent, match_day, competition, is_home) values (?, ?, ?, ?);";
+            PreparedStatement prepareStatement = connection.prepareStatement(query_);
+            prepareStatement.setString(1,"ESS");
+            prepareStatement.setString(2, "2021-12-08");
+            prepareStatement.setInt(3,2);
+            prepareStatement.setBoolean(4,false);
+            int rowsInserted = prepareStatement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("A new match was added successfully!");
+            }
 
-            System.out.println(getConnection());
+            String query = "select * from matches";
+            ResultSet resultSet = statement.executeQuery(query);
+            while(resultSet.next()){
+                String opponent = resultSet.getString("opponent");
+                String matchDay = resultSet.getString("match_day");
+                int competition = resultSet.getInt("competition");
+                boolean isHome = resultSet.getBoolean("is_home");
+                boolean isFinished = resultSet.getBoolean("is_finished");
+                int scoredGoals = resultSet.getInt("scored_goals");
+                int opponentGoals = resultSet.getInt("opponent_goals");
+
+                System.out.println("" +
+                        "\nopponent: " + opponent +
+                        "\nmatchDay: " + matchDay +
+                        "\ncompetition: " + competition +
+                        "\nisHome: " + isHome +
+                        "\nisFinished: " + isFinished +
+                        "\nscoredGoals: " + scoredGoals +
+                        "\nopponentGoals: " + opponentGoals);
+            }
+
         } catch (SQLException e) {
             System.out.println("Driver Not Found!");
             e.printStackTrace();

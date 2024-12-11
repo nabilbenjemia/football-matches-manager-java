@@ -3,9 +3,16 @@ package Controller;
 import Model.Match;
 import Model.MatchManager;
 import View.MatchView;
+import util.DatabaseUtil;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+
+import static util.DatabaseUtil.getConnection;
 
 public class MatchController {
 
@@ -53,6 +60,9 @@ public class MatchController {
 
     public void viewOldMatches() {
         LocalDate today = LocalDate.now();
+        String today_ = today.toString();
+
+
         List<Match> upcomingMatches = matchManager.getMatchesBefore(today); // Filter matches
         if (upcomingMatches.isEmpty()) {
             view.showMessage("No old matches found.");
@@ -98,14 +108,53 @@ public class MatchController {
 
     //add case of failing parsing
     private void addNewMatch() {
-        Match match = new Match(view.getOpponent(), LocalDate.parse(view.getMatchDay()), view.getCompetition(), view.isHome());
-        matchManager.addMatch(match);
+        String insertQuery = "insert into matches(opponent, match_day, competition, is_home) values (?, ?, ?, ?);";
+        try {
+            Connection connection = DatabaseUtil.getConnection();
+            PreparedStatement prepareStatement = connection.prepareStatement(insertQuery);
+            prepareStatement.setString(1,view.getOpponent());
+            prepareStatement.setString(2, view.getMatchDay());
+            prepareStatement.setInt(3,view.getCompetition().ordinal());
+            prepareStatement.setBoolean(4,view.isHome());
+            int rowsInserted = prepareStatement.executeUpdate();
+            if (rowsInserted > 0) {
+                view.showMessage("Match added successfully!");
+            } else {
+                view.showError("Failed to add match.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            view.showError("An error occurred while adding the match.");
+        }
+
+
 
     }
 
     private void changeMatchDay() {
         String[] input = view.getNewMatchDay();
-        matchManager.getMatch(LocalDate.parse(input[0])).setMatchDay(LocalDate.parse(input[1]));
+        String updateQuery = "UPDATE matches SET match_day = ? WHERE match_day = ?";
+
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+
+            //preparedStatement.setDate(1, java.sql.Date.valueOf(input[1]));
+            //preparedStatement.setDate(2, java.sql.Date.valueOf(input[0]));
+
+            preparedStatement.setString(1, input[1]);
+            preparedStatement.setString(2, input[0]);
+
+            int rowsUpdated = preparedStatement.executeUpdate();
+
+            if (rowsUpdated > 0) {
+                view.showMessage("Match date updated successfully!");
+            } else {
+                view.showError("No match found with the given date.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            view.showError("An error occurred while updating the match.");
+        }
     }
 
 }
