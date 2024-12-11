@@ -41,42 +41,48 @@ public class MatchController {
     private void handleUserChoice(int userChoice) {
         switch (userChoice) {
             case 0 -> registerAsAdministrator();
-            case 1 -> viewUpcomingMatches(); //View upcoming matches
-            case 2 -> viewOldMatches(); //View Old Matches
+            case 1 -> getMatchesAfter(LocalDate.now()); //View upcoming matches
+            case 2 -> getMatchesBefore(LocalDate.now()); //View Old Matches
             case 3 -> viewAllMatches(); //view all Matches
             default -> view.showError("Invalid choice. Please try again.");
         }
     }
 
-    public void viewUpcomingMatches() {
-        LocalDate today = LocalDate.now();
-        List<Match> upcomingMatches = matchManager.getMatchesAfter(today); // Filter matches
-        if (upcomingMatches.isEmpty()) {
-            view.showMessage("No upcoming matches found.");
-        } else {
-            view.displayMatches(upcomingMatches); // Display matches in the View
-        }
-    }
-
-    public void viewOldMatches() {
-        LocalDate today = LocalDate.now();
-        String today_ = today.toString();
-
-
-        List<Match> upcomingMatches = matchManager.getMatchesBefore(today); // Filter matches
-        if (upcomingMatches.isEmpty()) {
-            view.showMessage("No old matches found.");
-        } else {
-            view.displayMatches(upcomingMatches); // Display matches in the View
-        }
-    }
-
-    public void viewAllMatches() {
+    public void getMatchesAfter(LocalDate date) {
         try {
-            List<Match> matches = new ArrayList<>();
             Statement statement = DatabaseUtil.getConnection().createStatement();
-            String query = "select * from matches";
-            ResultSet resultSet = statement.executeQuery(query);
+            String query = "select * from matches where match_day > ?";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(query);
+            preparedStatement.setString(1, date.toString());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Match> matches = retrieveMatchData(resultSet);
+            view.displayMatches(matches);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            view.showError("An error occurred while retrieving matches.");
+        }
+    }
+
+    public void getMatchesBefore(LocalDate date) {
+        try {
+            Statement statement = DatabaseUtil.getConnection().createStatement();
+            String query = "select * from matches where match_day < ?";
+            PreparedStatement preparedStatement = getConnection().prepareStatement(query);
+            preparedStatement.setString(1, date.toString());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<Match> matches = retrieveMatchData(resultSet);
+            view.displayMatches(matches);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            view.showError("An error occurred while retrieving matches.");
+        }
+    }
+
+    private List<Match> retrieveMatchData(ResultSet resultSet) {
+        List<Match> matches = new ArrayList<>();
+        try {
             while (resultSet.next()) {
                 String opponent = resultSet.getString("opponent");
                 String matchDay = resultSet.getString("match_day");
@@ -92,6 +98,19 @@ public class MatchController {
                 matches.add(match);
 
             }
+        } catch (SQLException e){
+            e.printStackTrace();
+            view.showError("An error occurred while retrieving all matches.");
+        }
+        return matches;
+
+    }
+    public void viewAllMatches() {
+        try {
+            Statement statement = DatabaseUtil.getConnection().createStatement();
+            String query = "select * from matches";
+            ResultSet resultSet = statement.executeQuery(query);
+            List<Match> matches = retrieveMatchData(resultSet);
             view.displayMatches(matches);
         } catch (SQLException e) {
             e.printStackTrace();
