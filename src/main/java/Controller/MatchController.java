@@ -1,14 +1,14 @@
 package Controller;
 
+import Model.Competition;
 import Model.Match;
 import Model.MatchManager;
 import View.MatchView;
 import util.DatabaseUtil;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,7 +72,31 @@ public class MatchController {
     }
 
     public void viewAllMatches() {
-        view.displayMatches(matchManager.getListOfMatches());
+        try {
+            List<Match> matches = new ArrayList<>();
+            Statement statement = DatabaseUtil.getConnection().createStatement();
+            String query = "select * from matches";
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                String opponent = resultSet.getString("opponent");
+                String matchDay = resultSet.getString("match_day");
+                int competition = resultSet.getInt("competition");
+                boolean isHome = resultSet.getBoolean("is_home");
+                boolean isFinished = resultSet.getBoolean("is_finished");
+                int scoredGoals = resultSet.getInt("scored_goals");
+                int opponentGoals = resultSet.getInt("opponent_goals");
+                Match match = new Match(opponent, LocalDate.parse(matchDay), Competition.values()[competition], isHome);
+                match.setFinished(isFinished);
+                match.setScoredGoals(scoredGoals);
+                match.setOpponentGoals(opponentGoals);
+                matches.add(match);
+
+            }
+            view.displayMatches(matches);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            view.showError("An error occurred while retrieving all matches.");
+        }
     }
 
     public void registerAsAdministrator() {
