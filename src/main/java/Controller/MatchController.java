@@ -50,7 +50,6 @@ public class MatchController {
 
     public void getMatchesAfter(LocalDate date) {
         try {
-            Statement statement = DatabaseUtil.getConnection().createStatement();
             String query = "select * from matches where match_day > ?";
             PreparedStatement preparedStatement = getConnection().prepareStatement(query);
             preparedStatement.setString(1, date.toString());
@@ -66,7 +65,6 @@ public class MatchController {
 
     public void getMatchesBefore(LocalDate date) {
         try {
-            Statement statement = DatabaseUtil.getConnection().createStatement();
             String query = "select * from matches where match_day < ?";
             PreparedStatement preparedStatement = getConnection().prepareStatement(query);
             preparedStatement.setString(1, date.toString());
