@@ -2,12 +2,6 @@ package View;
 
 import Model.Competition;
 import Model.Match;
-import com.sun.source.tree.BreakTree;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.Console;
-import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 

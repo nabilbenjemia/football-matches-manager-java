@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Match Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .view {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="menu" class="view active">
+    <h1>Main Menu</h1>
+    <button id="registerButton">Register as Administrator</button>
+    <button>View Upcoming Matches</button>
+    <button>View Old Matches</button>
+    <button>View All Matches</button>
+</div>
+
+<div id="registerView" class="view">
+    <h1>Register as Administrator</h1>
+    <form id="registerForm">
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+        <button type="submit">Submit</button>
+    </form>
+    <button id="backButton">Back</button>
+</div>
+
+<div id="AdminView" class="view">
+    <h1>Admin Menu</h1>
+    <button>Add a Match</button>
+    <button>Change a Match's Day</button>
+    <button>Update a Match</button>
+    <button>Remove a Match</button>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
