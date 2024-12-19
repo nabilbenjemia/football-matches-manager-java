@@ -19,8 +19,7 @@ public class main {
 
         //matchManager.addMatch(match);
         //matchManager.addMatch(match2);
-        MatchController controller = new MatchController(view, matchManager);
+        MatchController controller = new MatchController(matchManager);
 
-        controller.start();
     }
 }

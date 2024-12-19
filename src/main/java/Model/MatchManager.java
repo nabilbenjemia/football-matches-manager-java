@@ -1,147 +1,176 @@
 package Model;
 
-import Model.Competition;
-import Model.Match;
+import util.DatabaseUtil;
 
+import java.sql.*;
 import java.time.LocalDate;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
+
+import static util.DatabaseUtil.getConnection;
 
 public class MatchManager {
 
 
+    private Connection connection;
 
-    private List<Match> listOfMatches;
-    public List<Match> getListOfMatches() {
-        return listOfMatches;
-    }
     public MatchManager() {
-        this.listOfMatches = new LinkedList<>();
+        try {
+            this.connection = getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void addMatch(String opponent, LocalDate matchDay, Competition competition, boolean isHome) {
-        for (Match addedMatch : listOfMatches) {
-            if (matchDay.equals(addedMatch.getMatchDay())) {
-                if(opponent.equals(addedMatch.getOpponent())) {
-                    System.out.println("This Model.Match has already been added");
-                } else {
-                    System.out.println("On this day, a Model.Match already exists");
-                }
-                return;
-            }
-        }
         Match match = new Match(opponent, matchDay, competition, isHome);
-        listOfMatches.add(match);
+        addMatch(match);
     }
 
     public void addMatch(Match match) {
-        LocalDate matchDay = match.getMatchDay();
-        String opponent =match.getOpponent();
-        for (Match addedMatch : listOfMatches) {
-            if (matchDay.equals(addedMatch.getMatchDay())) {
-                if(opponent.equals(addedMatch.getOpponent())) {
-                    System.out.println("This Model.Match has already been added");
-                } else {
-                    System.out.println("On this day, a Model.Match already exists");
-                }
-                return;
-            }
+        try{         Connection connection = DatabaseUtil.getConnection();
+
+            String insertQuery = "INSERT INTO matches(opponent, match_day, competition, is_home) VALUES (?, ?, ?, ?)";
+             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
+            preparedStatement.setString(1, match.getOpponent());
+            preparedStatement.setString(2, match.getMatchDay().toString());
+            preparedStatement.setInt(3, match.getCompetition().ordinal());
+            preparedStatement.setBoolean(4, match.isHome());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error
         }
-        listOfMatches.add(match);
     }
 
     public void removeMatch(LocalDate matchDay) {
-        int matchIndex = getMatchIndex(matchDay);
-        if(matchIndex >= 0){
-            listOfMatches.remove(matchIndex);
+        String deleteQuery = "DELETE FROM matches WHERE match_day = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(deleteQuery)) {
+            preparedStatement.setString(1, matchDay.toString());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error
         }
-    }
-
-    public void removeMatch(Match match) {
-        listOfMatches.remove(match);
-    }
-
-    private int getMatchIndex(LocalDate matchDay) {
-        for (int i = 0; i < listOfMatches.size(); i++) {
-            if (listOfMatches.get(i).getMatchDay().equals(matchDay)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    public void updateMatchDay(LocalDate oldMatchDay, LocalDate newMatchDay) {
-        int matchIndex = getMatchIndex(oldMatchDay);
-        if(matchIndex >= 0) {
-            listOfMatches.get(matchIndex).setMatchDay(newMatchDay);
-        }
-    }
-
-    public void setMatchFinished(LocalDate oldMatchDay) {
-        int matchIndex = getMatchIndex(oldMatchDay);
-        if(matchIndex >= 0) {
-            listOfMatches.get(matchIndex).setFinished(true);
-        }
-    }
-
-    public void setScoredGoals(LocalDate oldMatchDay, int scoredGoals) {
-        int matchIndex = getMatchIndex(oldMatchDay);
-        if(matchIndex >= 0) {
-            listOfMatches.get(matchIndex).setScoredGoals(scoredGoals);
-        }
-    }
-
-    public void setOpponentGoals(LocalDate oldMatchDay, int opponentGoals) {
-        int matchIndex = getMatchIndex(oldMatchDay);
-        if(matchIndex >= 0) {
-            listOfMatches.get(matchIndex).setOpponentGoals(opponentGoals);
-        }
-    }
-    public String toString() {
-        String str = "";
-        for (Match match: listOfMatches) {
-            str += match.toString() + "\n";
-        }
-        return str;
     }
 
     public Match getMatch(LocalDate matchDay) {
-        return listOfMatches.get(getMatchIndex(matchDay));
+        String selectQuery = "SELECT * FROM matches WHERE match_day = ?";
+        try (Connection connection = DatabaseUtil.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
+
+            // Set the matchDay in the prepared statement
+            preparedStatement.setDate(1, Date.valueOf(matchDay));
+
+            // Execute the query
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            // Process the result
+            if (resultSet.next()) {
+                // Create a match object based on the result
+                String opponent = resultSet.getString("opponent");
+                LocalDate retrievedMatchDay = resultSet.getDate("match_day").toLocalDate();
+                int competitionOrdinal = resultSet.getInt("competition");
+                boolean isHome = resultSet.getBoolean("is_home");
+
+                // Assuming the competition is an enum, convert the ordinal back
+                Competition competition = Competition.values()[competitionOrdinal];
+
+                // Create and return the Match object
+                return new Match(opponent, retrievedMatchDay, competition, isHome);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error
+        }
+        return null;
     }
 
-    public int getTotalNumberOfMatchs() {
-        return listOfMatches.size();
+    public void updateMatch(Match match) {
+        String updateQuery = "UPDATE matches SET opponent = ?, competition = ?, is_home = ?, is_finished = ?, scored_goals = ?, opponent_goals = ? WHERE match_day = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setString(1, match.getOpponent());
+            preparedStatement.setInt(2, match.getCompetition().ordinal());
+            preparedStatement.setBoolean(3, match.isHome());
+            preparedStatement.setBoolean(4, match.isFinished());
+            preparedStatement.setInt(5, match.getScoredGoals());
+            preparedStatement.setInt(6, match.getOpponentGoals());
+            preparedStatement.setString(7, match.getMatchDay().toString());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error
+        }
+    }
+
+    public List<Match> getAllMatches() {
+        List<Match> matches = new ArrayList<>();
+        String query = "SELECT * FROM matches";
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(query)) {
+
+            while (resultSet.next()) {
+                Match match = mapRowToMatch(resultSet);
+                matches.add(match);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error
+        }
+        return matches;
     }
 
     public List<Match> getMatchesAfter(LocalDate date) {
-        return listOfMatches.stream().filter(match -> match.getMatchDay().isAfter(date)).toList();
+        List<Match> matches = new ArrayList<>();
+        String query = "SELECT * FROM matches WHERE match_day > ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, date.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Match match = mapRowToMatch(resultSet);
+                matches.add(match);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error
+        }
+        return matches;
     }
 
     public List<Match> getMatchesBefore(LocalDate date) {
-        return listOfMatches.stream().filter(match -> match.getMatchDay().isBefore(date)).toList();
+        List<Match> matches = new ArrayList<>();
+        String query = "SELECT * FROM matches WHERE match_day < ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, date.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                Match match = mapRowToMatch(resultSet);
+                matches.add(match);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error
+        }
+        return matches;
     }
 
+    // Helper method to map a ResultSet row to a Match object
+    private Match mapRowToMatch(ResultSet resultSet) throws SQLException {
+        String opponent = resultSet.getString("opponent");
+        LocalDate matchDay = LocalDate.parse(resultSet.getString("match_day"));
+        Competition competition = Competition.values()[resultSet.getInt("competition")];
+        boolean isHome = resultSet.getBoolean("is_home");
+        boolean isFinished = resultSet.getBoolean("is_finished");
+        int scoredGoals = resultSet.getInt("scored_goals");
+        int opponentGoals = resultSet.getInt("opponent_goals");
 
-    /*
-    public void viewTasks(boolean onlyDone) {
-        boolean isEmpty = true;
-        if(onlyDone) {
-            for (Model.Match match : listOfTasks) {
-                if (match.getDone()) {
-                    isEmpty = false;
-                    System.out.println(match);
-                }
-            }
-        } else {
-            for (Model.Match match : listOfTasks) {
-                isEmpty = false;
-                System.out.println(match);
-            }
-        }
-        if(isEmpty) {
-            System.out.println("There are no tasks here");
-        }
+        Match match = new Match(opponent, matchDay, competition, isHome);
+        match.setFinished(isFinished);
+        match.setScoredGoals(scoredGoals);
+        match.setOpponentGoals(opponentGoals);
+        return match;
     }
 
-     */
 }
