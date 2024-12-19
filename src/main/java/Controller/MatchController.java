@@ -4,17 +4,85 @@ import Model.Competition;
 import Model.Match;
 import Model.MatchManager;
 import View.MatchView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import util.DatabaseUtil;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static util.DatabaseUtil.getConnection;
 
+
+@RestController
+@RequestMapping("/matches")
 public class MatchController {
+
+    private MatchManager matchManager;
+
+    @Autowired
+    public MatchController(MatchManager matchManager) {
+        this.matchManager = matchManager;
+    }
+
+    // View old matches (before today)
+    @GetMapping("/old")
+    public List<Match> getOldMatches() {
+        return matchManager.getMatchesBefore(LocalDate.now());
+    }
+
+    // View upcoming matches (after today)
+    @GetMapping("/upcoming")
+    public List<Match> getUpcomingMatches() {
+        return matchManager.getMatchesAfter(LocalDate.now());
+    }
+
+    // Add a new match
+    @PostMapping
+    public ResponseEntity<String> addMatch(@RequestBody Match match) {
+        matchManager.addMatch(match);
+        return ResponseEntity.ok("Match added successfully!");
+    }
+
+    // Update an existing match by matchDay
+    @PutMapping("/{matchDay}")
+    public ResponseEntity<String> updateMatch(@PathVariable("matchDay") String matchDay, @RequestBody Match updatedMatch) {
+        Match match = matchManager.getMatch(LocalDate.parse(matchDay));
+        if (match != null) {
+            match.setMatchDay(updatedMatch.getMatchDay());
+            match.setOpponentGoals(updatedMatch.getOpponentGoals());
+            match.setScoredGoals(updatedMatch.getScoredGoals());
+            match.setFinished(updatedMatch.isFinished());
+            match.setHome(updatedMatch.isHome());
+            match.setCompetition(updatedMatch.getCompetition());
+            return ResponseEntity.ok("Match updated successfully!");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Match not found.");
+    }
+
+    // Delete a match by matchDay
+    @DeleteMapping("/{matchDay}")
+    public ResponseEntity<String> deleteMatch(@PathVariable("matchDay") String matchDay) {
+        matchManager.removeMatch(LocalDate.parse(matchDay));
+        return ResponseEntity.ok("Match deleted successfully!");
+    }
+}
+
+
+
+
+   /*
+@RestController
+@RequestMapping("/matches")
+public class MatchController {
+
+
+
+
 
     private MatchView view;
     private boolean isAdministrator;
@@ -23,6 +91,7 @@ public class MatchController {
     private static final String ADMIN_NAME = "admin123";
     private static final String ADMIN_PASSWORD = "ilovefootball";
 
+    @Autowired
     public MatchController(MatchView view, MatchManager matchManager) {
         this.view = view;
         this.matchManager = matchManager;
@@ -41,14 +110,45 @@ public class MatchController {
     private void handleUserChoice(int userChoice) {
         switch (userChoice) {
             case 0 -> registerAsAdministrator();
-            case 1 -> getMatchesAfter(LocalDate.now()); //View upcoming matches
-            case 2 -> getMatchesBefore(LocalDate.now()); //View Old Matches
+            case 1 -> getUpcompingMatches(); //View upcoming matches
+            case 2 -> getOldMatches(); //View Old Matches
             case 3 -> viewAllMatches(); //view all Matches
             default -> view.showError("Invalid choice. Please try again.");
         }
     }
 
-    public void getMatchesAfter(LocalDate date) {
+    @GetMapping("/old")
+    public List<Match> getOldMatches(){
+        return getMatchesBefore(LocalDate.now());
+    }
+
+    @GetMapping("/upcoming")
+    public List<Match> getUpcompingMatches(){
+        return getMatchesAfter(LocalDate.now());
+    }
+
+    @PostMapping
+    public void addMatch(@RequestBody Match match) {
+        matchManager.addMatch(match);
+    }
+
+    @PutMapping("/{matchDay}")
+    public void updateMatch(@PathVariable("matchDay") String matchDay, @RequestBody Match updatedMatch) {
+        Match match = matchManager.getMatch(LocalDate.parse(matchDay));
+        match.setMatchDay(updatedMatch.getMatchDay());
+        match.setOpponentGoals(updatedMatch.getOpponentGoals());
+        match.setScoredGoals(updatedMatch.getScoredGoals());
+        match.setFinished(updatedMatch.isFinished());
+        match.setHome(updatedMatch.isHome());
+        match.setCompetition(updatedMatch.getCompetition());
+    }
+
+    @DeleteMapping
+    public void deleteMatch(@PathVariable("matchDay") String matchDay) {
+        matchManager.removeMatch(LocalDate.parse(matchDay));
+    }
+
+    public List<Match> getMatchesAfter(LocalDate date) {
         try {
             String query = "select * from matches where match_day > ?";
             PreparedStatement preparedStatement = getConnection().prepareStatement(query);
@@ -56,14 +156,16 @@ public class MatchController {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Match> matches = retrieveMatchData(resultSet);
-            view.displayMatches(matches);
+            return matches;
+            //view.displayMatches(matches);
         } catch (SQLException e) {
             e.printStackTrace();
-            view.showError("An error occurred while retrieving matches.");
+            //view.showError("An error occurred while retrieving matches.");
         }
+        return null;
     }
 
-    public void getMatchesBefore(LocalDate date) {
+    public List<Match> getMatchesBefore(LocalDate date) {
         try {
             String query = "select * from matches where match_day < ?";
             PreparedStatement preparedStatement = getConnection().prepareStatement(query);
@@ -71,11 +173,13 @@ public class MatchController {
 
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Match> matches = retrieveMatchData(resultSet);
-            view.displayMatches(matches);
+            return matches;
+            //view.displayMatches(matches);
         } catch (SQLException e) {
             e.printStackTrace();
-            view.showError("An error occurred while retrieving matches.");
+            //view.showError("An error occurred while retrieving matches.");
         }
+        return null;
     }
 
     private List<Match> retrieveMatchData(ResultSet resultSet) {
@@ -148,6 +252,8 @@ public class MatchController {
     }
 
     //add case of failing parsing
+
+
     private void addNewMatch() {
         String insertQuery = "insert into matches(opponent, match_day, competition, is_home) values (?, ?, ?, ?);";
         try {
@@ -199,3 +305,4 @@ public class MatchController {
     }
 
 }
+*/
