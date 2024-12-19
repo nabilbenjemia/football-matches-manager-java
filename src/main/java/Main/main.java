@@ -10,7 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 
 public class main {
-
+/*
     public static void main(String[] args) {
         MatchView view = new MatchView();
         MatchManager matchManager = new MatchManager();
@@ -22,4 +22,6 @@ public class main {
         MatchController controller = new MatchController(matchManager);
 
     }
+
+ */
 }

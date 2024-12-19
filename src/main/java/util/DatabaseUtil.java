@@ -26,7 +26,7 @@ public class DatabaseUtil {
             String query_ = "insert into matches(opponent, match_day, competition, is_home) values (?, ?, ?, ?);";
             PreparedStatement prepareStatement = connection.prepareStatement(query_);
             prepareStatement.setString(1,"ESS");
-            prepareStatement.setString(2, "2021-12-08");
+            prepareStatement.setString(2, "2021-12-01");
             prepareStatement.setInt(3,2);
             prepareStatement.setBoolean(4,false);
             int rowsInserted = prepareStatement.executeUpdate();
