@@ -5,6 +5,7 @@ import util.DatabaseUtil;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,6 +168,101 @@ public class MatchManager {
         }
         return matches;
     }
+
+    public void setOpponent(String matchDay, String newOpponent){
+        String updateQuery = "UPDATE matches set opponent = ? WHERE match_day = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setString(1, newOpponent);
+            preparedStatement.setString(2, matchDay);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("error in MatchManager: " + e.getMessage());
+            // Handle error
+        }
+    }
+
+    public void setCompetition(String matchDay, int competitionValue){
+        String updateQuery = "UPDATE matches set competition = ? WHERE match_day = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setInt(1, competitionValue);
+            preparedStatement.setString(2, matchDay);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error
+        }
+    }
+
+    public boolean setIsHome(String matchDay, int isHome){
+        String updateQuery = "UPDATE matches set is_home = ? WHERE match_day = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setInt(1, isHome);
+            preparedStatement.setString(2, matchDay);
+            preparedStatement.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+            // Handle error
+        }
+    }
+
+    public void setIsFinished(String matchDay, int isFinished){
+        String updateQuery = "UPDATE matches set is_finished = ? WHERE match_day = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setInt(1, isFinished);
+            preparedStatement.setString(2, matchDay);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error
+        }
+    }
+
+    public void setScoredGoals(String matchDay, int scoredGoals){
+        String updateQuery = "UPDATE matches set scored_goals = ? WHERE match_day = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setInt(1, scoredGoals);
+            preparedStatement.setString(2, matchDay);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error
+        }
+    }
+
+    public void setOpponentGoals(String matchDay, int opponentGoals){
+        String updateQuery = "UPDATE matches set scored_goals = ? WHERE match_day = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setInt(1, opponentGoals);
+            preparedStatement.setString(2, matchDay);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error
+        }
+    }
+
+    public void setMatchDay(String oldMatchDay, String newMatchDay){
+        String updateQuery = "UPDATE matches set scored_goals = ? WHERE match_day = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setString(1, newMatchDay);
+            preparedStatement.setString(2, oldMatchDay);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle error
+        }
+    }
+
 
     // Helper method to map a ResultSet row to a Match object
     private Match mapRowToMatch(ResultSet resultSet) throws SQLException {

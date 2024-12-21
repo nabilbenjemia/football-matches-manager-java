@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ControllerTest {
@@ -86,9 +86,42 @@ public class ControllerTest {
         assertEquals("Match added successfully!", response.getBody(), "Match was not added");
 
         restTemplate.delete("/matches/{matchDay}", "2080-01-01");
-        ResponseEntity<String> deleteResponse = restTemplate.getForEntity("/matches", String.class);
+        ResponseEntity<String> deleteResponse = restTemplate.getForEntity("/matches/all", String.class);
 
         assertFalse(deleteResponse.getBody().contains("2080-01-01"), "Match was not removed");
+
+    }
+
+    @Test
+    void testUpdateMatch() {
+        String matchDay = "2028-06-12"; // Example match day
+        String updatedMatchJSON = """
+            {
+                "opponent": "Team B"
+            }
+        """;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
+        HttpEntity<String> request = new HttpEntity<>(updatedMatchJSON, headers);
+
+        // Act
+        ResponseEntity<String> response = restTemplate.exchange(
+                "/matches/" + matchDay,
+                HttpMethod.PUT,
+                request,
+                String.class
+        );
+
+        // Assert
+        System.out.println("Response status: " + response.getStatusCode());
+        System.out.println("Response body: " + response.getBody());
+        assert(response.getStatusCode() == HttpStatus.OK);
+
+        ResponseEntity<String> updateResponse = restTemplate.getForEntity("/matches/all", String.class);
+        System.out.println(updateResponse.getBody().replace("}", "}\n"));
+        assertTrue(updateResponse.getBody().contains("Team B"), "Match was not updated");
+        assertFalse(updateResponse.getBody().contains("Flamengo"), "Match was not updated");
 
     }
 
