@@ -1,5 +1,11 @@
 package Model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.time.*;
 
 public class Match {
@@ -14,7 +20,11 @@ public class Match {
     private Competition competition;
 
     //Constructor
-    public Match(String opponent, LocalDate matchDay, Competition competition, boolean isHome) {
+    @JsonCreator
+    public Match(@JsonProperty("opponent") String opponent,
+                 @JsonProperty("date") LocalDate matchDay,
+                 @JsonProperty("competition") Competition competition,
+                 @JsonProperty("home") boolean isHome) {
         this.opponent = opponent;
         this.matchDay = matchDay;
         this.competition = competition;
@@ -22,6 +32,31 @@ public class Match {
         this.isFinished = false;
         this.scoredGoals = ZERO;
         this.opponentGoals = ZERO;
+    }
+
+    // Custom constructor that accepts JSON as a string
+    public Match(String matchJSON) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode rootNode = objectMapper.readTree(matchJSON);
+
+        this.opponent = rootNode.get("opponent").asText();
+        this.matchDay = LocalDate.parse(rootNode.get("date").asText());
+
+        // Handling competition as an enum from a string
+        int competitionString = rootNode.get("competition").asInt();
+        if(competitionString >= 0 && competitionString <= 3) {
+            this.competition = Competition.values()[competitionString];
+        } else {
+            this.competition = Competition.FRIENDLY;
+        }
+
+        // Handling 'home' as a boolean
+        this.isHome = rootNode.get("home").asBoolean();
+
+        // Default values for isFinished, scoredGoals, and opponentGoals
+        this.isFinished = false;
+        this.scoredGoals = 0;
+        this.opponentGoals = 0;
     }
 
     public String getOpponent() {
