@@ -1,16 +1,7 @@
 package Controller;
 
-import Controller.MatchController;
-import Model.Competition;
-import Model.Match;
-import Model.MatchManager;
-import View.MatchView;
 import org.junit.jupiter.api.Test;
-
-import java.io.ByteArrayInputStream;
-import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +41,13 @@ public class ControllerTest {
         System.out.println(response.getBody().replace("}", "}\n"));
         assertTrue(response.getStatusCode().is2xxSuccessful());
     }
-
+/*
     @Test
     void testAddMatch() {
 
         String newMatchJson = "{"
                 + "\"opponent\": \"test Opponent\","
-                + "\"date\": \"2024-12-21\","
+                + "\"date\": \"2029-12-21\","
                 + "\"competition\": \"1\","
                 + "\"home\": true"
                 + "}";
@@ -72,8 +63,10 @@ public class ControllerTest {
         assertEquals("Match added successfully!", response.getBody());
     }
 
+ */
+
     @Test
-    void testDeleteMatch() {
+    void testAddAndDeleteMatch() {
         String newMatchJson = "{"
                 + "\"opponent\": \"test Delete Opponent\","
                 + "\"date\": \"2080-01-01\","
