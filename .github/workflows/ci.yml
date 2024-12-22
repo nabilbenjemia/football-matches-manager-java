@@ -33,7 +33,7 @@ jobs:
           distribution: 'adopt'
 
       - name: Debug resources directory
-          run: ls -R src/main/resources/
+        run: ls -R src/main/resources/
 
       # Build with Gradle
       - name: Build with Gradle
