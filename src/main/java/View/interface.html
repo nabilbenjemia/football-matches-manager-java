@@ -33,9 +33,9 @@
 <div id="menu" class="view active">
     <h1>Main Menu</h1>
     <button id="registerButton">Register as Administrator</button>
-    <button>View Upcoming Matches</button>
-    <button>View Old Matches</button>
-    <button>View All Matches</button>
+    <button id="viewUpcomingMatchesButton">View Upcoming Matches</button>
+    <button id="viewOldMatchesButton">View Old Matches</button>
+    <button id="viewAllMatchesButton">View All Matches</button>
 </div>
 
 <div id="registerView" class="view">
@@ -58,6 +58,25 @@
     <button>Remove a Match</button>
 </div>
 
+<div id="viewAllMatchesView" class="view">
+    <h1>All Matches</h1>
+    <div id="matchesContainer"></div>
+</div>
+
+<div id="viewUpcomingMatchesView" class="view">
+    <h1>Upcoming Matches</h1>
+    <div id="upcomingMatchesContainer"></div>
+
+</div>
+
+<div id="viewOldMatchesView" class="view">
+    <h1>Old Matches</h1>
+    <div id="oldMatchesContainer"></div>
+
+</div>
+
+<!-- A single back button at the bottom -->
+<button id="backToMenuButton">Back to Menu</button>
 <script src="script.js"></script>
 
 </body>

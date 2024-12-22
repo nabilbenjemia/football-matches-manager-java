@@ -90,7 +90,8 @@ public class ControllerTest {
         String matchDay = "2028-06-12"; // Example match day
         String updatedMatchJSON = """
             {
-                "opponent": "Team B"
+                "opponent": "Real Madrid",
+                "competition": "2"
             }
         """;
 
@@ -113,7 +114,7 @@ public class ControllerTest {
 
         ResponseEntity<String> updateResponse = restTemplate.getForEntity("/matches/all", String.class);
         System.out.println(updateResponse.getBody().replace("}", "}\n"));
-        assertTrue(updateResponse.getBody().contains("Team B"), "Match was not updated");
+        assertTrue(updateResponse.getBody().contains("Real Madrid"), "Match was not updated");
         assertFalse(updateResponse.getBody().contains("Flamengo"), "Match was not updated");
 
     }

@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/matches")
+@CrossOrigin(origins = "http://localhost:64127")
 public class MatchController {
 
     private MatchManager matchManager;
@@ -98,7 +99,7 @@ public class MatchController {
             } else {
                 System.out.println("NO OPPONENT FOUND");
             }
-/*
+
             if (rootNode.has("competition")) {
                 int competitionValue = rootNode.get("competition").asInt();
                 matchManager.setCompetition(matchDay, competitionValue); // assuming competition is an enum
@@ -125,7 +126,7 @@ public class MatchController {
                 matchManager.setMatchDay(matchDay, rootNode.get("date").asText());
             }
 
- */
+
             return ResponseEntity.ok("Match updated successfully");
 
 
